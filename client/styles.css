@@ -11,6 +11,7 @@ html, body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    gap: 5%;
 }
 
 #draw-canvas {
@@ -19,3 +20,21 @@ html, body {
     padding: 0;
     overflow: hidden;
 }
+
+#color-picker {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-auto-rows: 1fr;
+    width: 20%;
+}
+
+.color-box {
+    margin: 1;
+    aspect-ratio: 1 / 1;
+}
+
+.color-box:hover {
+    transform: scale(1.2);
+    transform-origin: center;
+    z-index: 1;
+  }

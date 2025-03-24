@@ -1,3 +1,19 @@
+const colorPicker = document.getElementById('color-picker');
+const colors = ['#ff0000', '#ff8000', '#ffff00', '#00ffff', '#0000ff', '#8000ff', '#ff00ff', '#ffffff', '#8c8c8c', '#000000'];
+let selectedColor = '#000000';
+colors.forEach(color => {
+    const colorBox = document.createElement('div');
+    colorBox.style.backgroundColor = color;
+    colorBox.classList.add('color-box');
+    colorBox.addEventListener('click', () => selectColor(color));
+    colorPicker.appendChild(colorBox);
+})
+
+function selectColor(color) {
+    selectedColor = color;
+}
+
+
 const canvas = document.getElementById('draw-canvas');
 const gridSize = 5;
 const squareMargin = 5;
@@ -6,6 +22,7 @@ let pixels = new Array(gridSize ** 2).fill('#bfbfbf');
 
 window.addEventListener('resize', handleResize);
 canvas.addEventListener('mousemove', handleMouseMove);
+canvas.addEventListener('mousedown', handleMouseMove);
 canvas.addEventListener('mouseleave', handleMouseOut);
 
 const ctx = canvas.getContext('2d');
@@ -19,10 +36,10 @@ function getMouseSquare(mouseX, mouseY) {
         mouseSquareY = Math.floor((mouseY - squareMargin/2) / (squareLength + squareMargin));
     }
     if (mouseSquareX < 0 || mouseSquareX >= gridSize) {
-        mouseSquareX = null
+        mouseSquareX = null;
     }
     if (mouseSquareY < 0 || mouseSquareY >= gridSize) {
-        mouseSquareY = null
+        mouseSquareY = null;
     }
     return [mouseSquareX, mouseSquareY];
 }
@@ -65,20 +82,20 @@ function handleResize() {
 function colorPixel(mouseX, mouseY, isDrawing) {
     const [mouseSquareX, mouseSquareY] = getMouseSquare(mouseX, mouseY);
     if (mouseSquareX != null && mouseSquareY != null && isDrawing) {
-        pixels[mouseSquareX*gridSize + mouseSquareY] = '#188c41';
+        pixels[mouseSquareX*gridSize + mouseSquareY] = selectedColor;
     }
 }
 
 function isPrimaryButtonPressed(buttons) {
-    return (buttons % 2 !== 0)
+    return (buttons % 2 !== 0);
 }
 
 function handleMouseMove(event) {
     const rect = canvas.getBoundingClientRect();
-    isDrawing = isPrimaryButtonPressed(event.buttons)
+    isDrawing = isPrimaryButtonPressed(event.buttons);
     const mouseX = event.clientX - rect.left;
     const mouseY = event.clientY - rect.top;
-    colorPixel(mouseX, mouseY, isDrawing)
+    colorPixel(mouseX, mouseY, isDrawing);
 
   
     drawGrid(ctx, gridSize, mouseX, mouseY);
@@ -88,4 +105,4 @@ function handleMouseOut() {
     drawGrid(ctx, gridSize);
 }
 
-handleResize()
+handleResize();

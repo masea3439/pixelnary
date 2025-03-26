@@ -3,9 +3,16 @@
     <head>
         <link rel="stylesheet" href="styles.css">
         <title>pixelnary</title>
+        <style>
+            body {
+                background-color: #faf4d6;
+            }
+        </style>
     </head>
     <body>
-        <script src="app.js" defer></script>
+        <script src="color_picker.js" type="module" defer></script>
+        <script src="draw_canvas.js" type="module" defer></script>
+        <script src="app.js" type="module" defer></script>
         <div id="container">
             <canvas id="draw-canvas"></canvas>
             <div id="color-picker"></div>

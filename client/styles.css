@@ -6,16 +6,63 @@ html, body {
     height: 100%;
 }
 
-#container {
+#menu-container {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     height: 100vh;
     gap: 5%;
 }
 
+#host-game {
+    background-color: #ff8000;
+}
+
+#join-game {
+    background-color: #0099ff;
+}
+
+.button {
+    border-radius: 30px;
+    border-width: 0;
+    font-family: "Arial Rounded MT Bold";
+    font-size: x-large;
+    color: #ffffff; 
+    min-height: 10%;
+    width: 25%;
+    min-width: 200px;
+}
+
+.button:hover {
+    transform: scale(1.2);
+    transform-origin: center;
+}
+
+.text {
+    font-family: "Arial Rounded MT Bold";
+    font-size: xx-large;
+    color: #000000;
+}
+
+#outer-game-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 2%;
+    height: 100%;
+}
+
+#inner-game-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    gap: 5%;
+}
+
 #draw-canvas {
-    background-color: #000000;
     margin: 0;
     padding: 0;
     overflow: hidden;

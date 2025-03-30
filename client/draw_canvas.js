@@ -1,5 +1,5 @@
 import { selectedColor } from "./color_picker.js";
-import { RateLimitedSocket } from "./app.js"
+import { socket, RateLimitedSocket } from "./websocket.js"
 
 const drawSocket = new RateLimitedSocket(1)
 const canvas = document.getElementById('draw-canvas');
@@ -12,6 +12,13 @@ window.addEventListener('resize', handleResize);
 canvas.addEventListener('mousemove', handleMouseMove);
 canvas.addEventListener('mousedown', handleMouseMove);
 canvas.addEventListener('mouseleave', handleMouseOut);
+
+socket.onmessage = (event) => {
+    console.log("Message from server:", event.data);
+    //TODO process message type
+    pixels = event.data.split(',');
+    handleResize();
+};
 
 const ctx = canvas.getContext('2d');
 

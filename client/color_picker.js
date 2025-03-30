@@ -1,4 +1,4 @@
-const colors = ['#ff0000', '#ff8000', '#ffff00', '#00ffff', '#0000ff', '#8000ff', '#ff00ff', '#ffffff', '#8c8c8c', '#000000'];
+const colors = ['#ff0000', '#ff8000', '#ffff00', '#00ff00', '#009933', '#00ffff', '#0099ff', '#0000ff', '#8000ff', '#ff00ff', '#996600', '#ffffff', '#bfbfbf', '#6c6c6c', '#000000'];
 
 const colorPicker = document.getElementById('color-picker');
 export let selectedColor = '#000000';

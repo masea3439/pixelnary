@@ -1,17 +1,15 @@
-const socket = new WebSocket("ws://localhost:3333/ws");
-
-export class RateLimitedSocket {
-    constructor(minSecondsBetweenRequests) {
-        this.minSecondsBetweenRequests = minSecondsBetweenRequests;
-        this.lastSendTime = 0;
-    }
-
-    send(data) {
-        const now = Date.now();
-        const elapsedTime = now - this.lastSendTime;
-        if (elapsedTime > this.minSecondsBetweenRequests * 1000) {
-            this.lastSendTime = now;
-            socket.send(data);
+document.getElementById("host-game").addEventListener("click", function() {
+    fetch("http://localhost:3333/api/host", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
         }
-    }
-}
+    })
+    .then(response => response.text())
+    .then(roomKey => window.location.href = `game/${roomKey}`)
+    .catch(error => console.error("Error:", error));
+})
+
+document.getElementById("join-game").addEventListener("click", function() {
+    
+})

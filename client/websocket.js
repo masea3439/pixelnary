@@ -2,19 +2,26 @@ const currentUrl = window.location.href;
 const roomKey = currentUrl.split('/').pop();
 export const socket = new WebSocket(`ws://localhost:3333/ws?key=${roomKey}`);
 
-export class RateLimitedSocket {
-    constructor(minSecondsBetweenRequests) {
-        this.minSecondsBetweenRequests = minSecondsBetweenRequests;
-        this.lastSendTime = 0;
+export class PeriodicUpdateSocket {
+    constructor(secondsBetweenRequests) {
+        this.secondsBetweenRequests = secondsBetweenRequests;
+        this.lastDataSent = null;
+        this.newData = null;
+        this.interval = setInterval(() => this.sendIfUpdate(), secondsBetweenRequests * 1000)
     }
 
-    // TODO cache and send most recent request after time elapsed
-    send(data) {
-        const now = Date.now();
-        const elapsedTime = now - this.lastSendTime;
-        if (elapsedTime > this.minSecondsBetweenRequests * 1000) {
-            this.lastSendTime = now;
-            socket.send(data);
+    sendData(data) {
+        this.newData = data;
+    }
+
+    sendIfUpdate() {
+        if (this.newData != this.lastDataSent) {
+            socket.send(this.newData);
+            this.lastDataSent = this.newData;
         }
+    }
+
+    destroy() {
+        clearInterval(this.interval)
     }
 }

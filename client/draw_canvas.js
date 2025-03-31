@@ -1,7 +1,7 @@
 import { selectedColor } from "./color_picker.js";
-import { socket, RateLimitedSocket } from "./websocket.js"
+import { socket, PeriodicUpdateSocket } from "./websocket.js"
 
-const drawSocket = new RateLimitedSocket(1)
+const drawSocket = new PeriodicUpdateSocket(0.25)
 const canvas = document.getElementById('draw-canvas');
 const gridSize = 5;
 const squareMargin = 5;
@@ -78,7 +78,7 @@ function colorPixel(mouseX, mouseY, isDrawing) {
     const [mouseSquareX, mouseSquareY] = getMouseSquare(mouseX, mouseY);
     if (mouseSquareX != null && mouseSquareY != null && isDrawing) {
         pixels[mouseSquareX*gridSize + mouseSquareY] = selectedColor;
-        drawSocket.send(pixels)
+        drawSocket.sendData(pixels.toString())
     }
 }
 

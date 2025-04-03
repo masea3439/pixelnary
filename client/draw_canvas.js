@@ -68,7 +68,7 @@ function drawGrid(ctx, gridSize, mouseX=null, mouseY=null) {
 
 function handleResize() {
     const parentElement = canvas.parentElement;
-    const gridLength = Math.min(parentElement.offsetWidth, parentElement.offsetHeight) * 0.8;
+    const gridLength = Math.min(parentElement.offsetWidth, parentElement.offsetHeight);
     squareLength = (gridLength - squareMargin*(gridSize+1)) / gridSize;
     canvas.width = gridLength;
     canvas.height = gridLength;

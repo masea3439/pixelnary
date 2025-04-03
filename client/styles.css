@@ -72,25 +72,30 @@ html, body {
     align-items: center;
     flex-direction: column;
     margin-top: 2%;
+    gap: 5%;
     height: 100%;
 }
 
 #inner-game-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 94%;
-    gap: 3%;
+    display: grid;
+    place-items: center;
+    grid-template-columns: 70% 30%;
+    grid-template-rows: 80% 20%;
+    height: 80%;
+    width: 80%;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    box-sizing: border-box;
+    background-color: #faf4d6;
+    border-radius: 20px;
 }
 
-#draw-container {
+#draw-canvas-wrapper {
     display: flex;
+    width: 100%;
+    height: 100%;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
-    height: 90%;
-    flex: 2;
 }
 
 #draw-canvas {
@@ -106,12 +111,13 @@ html, body {
     width: 50%;
 }
 
-#guess-container {
+#guess-log-wrapper {
     display: flex;
-    justify-content: right;
-    align-items: right;
-    flex-direction: column;
-    gap: 20px;
+    justify-content: end;
+    align-items: end;
+    height: 100%;
+    width: 100%;
+    margin-right: 10%;
 }
 
 #guess-log {
@@ -121,8 +127,19 @@ html, body {
     flex: 1;
 }
 
+#guess-input-wrapper {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    margin-right: 10%;
+}
+
 #guess-input {
     font-family: "Arial Rounded MT Bold";
+    width: 100%;
+    font-size: large;
 }
 
 .color-box {

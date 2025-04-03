@@ -39,10 +39,32 @@ html, body {
     transform-origin: center;
 }
 
-.text {
+#header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#word {
     font-family: "Arial Rounded MT Bold";
     font-size: xx-large;
     color: #000000;
+    margin: auto;
+}
+
+#timer {
+    display: flex;
+    font-family: "Arial Rounded MT Bold";
+    font-size: large;
+    align-items: center;
+    color: #ffffff;
+    position: absolute;
+    right: 3%;
+    gap: 3%;
+    padding: 0.5em;
+    background-color: #000000;
+    border-radius: 1000px;
 }
 
 #outer-game-container {
@@ -58,8 +80,17 @@ html, body {
     justify-content: center;
     align-items: center;
     height: 100%;
-    width: 100%;
-    gap: 5%;
+    width: 94%;
+    gap: 3%;
+}
+
+#draw-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 90%;
+    flex: 2;
 }
 
 #draw-canvas {
@@ -70,9 +101,28 @@ html, body {
 
 #color-picker {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(10, 1fr);
     grid-auto-rows: 1fr;
-    width: 20%;
+    width: 50%;
+}
+
+#guess-container {
+    display: flex;
+    justify-content: right;
+    align-items: right;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#guess-log {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+}
+
+#guess-input {
+    font-family: "Arial Rounded MT Bold";
 }
 
 .color-box {
@@ -84,4 +134,29 @@ html, body {
     transform: scale(1.2);
     transform-origin: center;
     z-index: 1;
-  }
+}
+
+.guess {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-top-left-radius: 1000px;
+    border-top-right-radius: 1000px;
+    border-bottom-left-radius: 1000px;
+    padding: 10px;
+    font-family: "Arial Rounded MT Bold";
+    text-align: right;
+    margin-left: auto;
+}
+
+.incorrect-guess {
+    background-color: #f98a8a;
+}
+
+.correct-guess {
+    background-color: #99ff99;
+}
+
+svg {
+    height: 1.5em;
+}

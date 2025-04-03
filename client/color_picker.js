@@ -1,4 +1,10 @@
-const colors = ['#ff0000', '#ff8000', '#ffff00', '#00ff00', '#009933', '#00ffff', '#0099ff', '#0000ff', '#8000ff', '#ff00ff', '#996600', '#ffffff', '#bfbfbf', '#6c6c6c', '#000000'];
+const colors = [
+    '#ff0000', '#ff8000', '#ffff00', '#00ff00', '#00ffff',
+    '#0080ff', '#0000ff', '#8000ff', '#ff00ff', '#ff0080', 
+    '#ff8096', '#000000', '#bebebe', '#686868', '#ffffff',
+    '#8e6900', '#c28000', '#008080', '#800080', '#009933'
+];
+
 
 const colorPicker = document.getElementById('color-picker');
 export let selectedColor = '#000000';
@@ -9,6 +15,8 @@ colors.forEach(color => {
     colorBox.addEventListener('click', () => selectColor(color));
     colorPicker.appendChild(colorBox);
 })
+
+//colorPicker.style.visibility = 'hidden';
 
 function selectColor(color) {
     selectedColor = color;

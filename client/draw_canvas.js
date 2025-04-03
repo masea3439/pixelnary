@@ -3,7 +3,7 @@ import { socket, PeriodicUpdateSocket } from "./websocket.js"
 
 const drawSocket = new PeriodicUpdateSocket(0.25)
 const canvas = document.getElementById('draw-canvas');
-const gridSize = 5;
+const gridSize = 6;
 const squareMargin = 5;
 let squareLength = null;
 let pixels = new Array(gridSize ** 2).fill('#bfbfbf');
@@ -67,7 +67,8 @@ function drawGrid(ctx, gridSize, mouseX=null, mouseY=null) {
 }
 
 function handleResize() {
-    const gridLength = Math.min(window.innerWidth, window.innerHeight) * 0.7;
+    const parentElement = canvas.parentElement;
+    const gridLength = Math.min(parentElement.offsetWidth, parentElement.offsetHeight) * 0.8;
     squareLength = (gridLength - squareMargin*(gridSize+1)) / gridSize;
     canvas.width = gridLength;
     canvas.height = gridLength;

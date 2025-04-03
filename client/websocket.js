@@ -7,7 +7,7 @@ export class PeriodicUpdateSocket {
         this.secondsBetweenRequests = secondsBetweenRequests;
         this.lastDataSent = null;
         this.newData = null;
-        this.interval = setInterval(() => this.sendIfUpdate(), secondsBetweenRequests * 1000)
+        this.interval = setInterval(() => this.sendIfUpdate(), secondsBetweenRequests * 1000);
     }
 
     sendData(data) {
@@ -22,6 +22,6 @@ export class PeriodicUpdateSocket {
     }
 
     destroy() {
-        clearInterval(this.interval)
+        clearInterval(this.interval);
     }
 }

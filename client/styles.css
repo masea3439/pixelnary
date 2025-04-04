@@ -113,8 +113,8 @@ html, body {
 
 #guess-log-wrapper {
     display: flex;
-    justify-content: end;
-    align-items: end;
+    justify-content: flex-end;
+    align-items: flex-end;
     height: 100%;
     width: 100%;
     margin-right: 10%;
@@ -124,7 +124,13 @@ html, body {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    flex: 1;
+    height: 100%;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+::-webkit-scrollbar {
+    display: none;
 }
 
 #guess-input-wrapper {

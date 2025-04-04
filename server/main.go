@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"log"
@@ -31,14 +30,6 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-func sendMessageToPartner(conn *websocket.Conn, gameRoom *GameRoom, data []byte) {
-	if gameRoom.player1Conn == conn {
-		gameRoom.player2Conn.WriteMessage(websocket.TextMessage, data)
-	} else {
-		gameRoom.player1Conn.WriteMessage(websocket.TextMessage, data)
-	}
-}
-
 func openWebSocketConn(w http.ResponseWriter, r *http.Request) {
 	queryParams := r.URL.Query()
 	roomKey := queryParams.Get("key")
@@ -66,22 +57,12 @@ func openWebSocketConn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	for {
-		messageType, p, err := conn.ReadMessage()
+		_, p, err := conn.ReadMessage()
 		if err != nil {
 			log.Println(err)
 			return
 		}
-		if err := conn.WriteMessage(messageType, p); err != nil {
-			log.Println(err)
-			return
-		}
-
-		//TODO Input validation
-		//TODO Save to database
-		//TODO Verify game state
-		canvas := bytes.Split(p, []byte(","))
-		log.Println(canvas)
-		sendMessageToPartner(conn, gameRoom, p)
+		ProcessClientMessage(conn, gameRoom, p)
 	}
 }
 

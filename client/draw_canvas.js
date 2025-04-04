@@ -1,7 +1,8 @@
 import { selectedColor } from "./color_picker.js";
-import { socket, PeriodicUpdateSocket } from "./websocket.js"
+import { PeriodicUpdateSocket } from "./websocket.js";
+import { eventEmitter } from "./event_emitter.js";
 
-const drawSocket = new PeriodicUpdateSocket(0.25)
+const drawSocket = new PeriodicUpdateSocket("canvas", 0.25)
 const canvas = document.getElementById('draw-canvas');
 const gridSize = 6;
 const squareMargin = 5;
@@ -13,14 +14,12 @@ canvas.addEventListener('mousemove', handleMouseMove);
 canvas.addEventListener('mousedown', handleMouseMove);
 canvas.addEventListener('mouseleave', handleMouseOut);
 
-socket.onmessage = (event) => {
-    console.log("Message from server:", event.data);
-    //TODO process message type
-    pixels = event.data.split(',');
-    handleResize();
-};
-
 const ctx = canvas.getContext('2d');
+
+eventEmitter.on('canvas', (data) => {
+    pixels = data.split(',');
+    handleResize();
+});
 
 function getMouseSquare(mouseX, mouseY) {
     let mouseSquareX = null;

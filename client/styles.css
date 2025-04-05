@@ -123,13 +123,15 @@ html, body {
 #guess-log {
     display: flex;
     flex-direction: column;
+    justify-content: flex-end;
     gap: 20px;
     height: 100%;
+    width: 100%;
     overflow-y: auto;
     scrollbar-width: none;
 }
 
-::-webkit-scrollbar {
+#guess-log::-webkit-scrollbar {
     display: none;
 }
 
@@ -159,6 +161,16 @@ html, body {
     z-index: 1;
 }
 
+@keyframes guess-animation {
+    from {
+        transform: scale(1.3);
+        transform-origin: bottom right;
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
 .guess {
     display: flex;
     align-items: center;
@@ -170,6 +182,7 @@ html, body {
     font-family: "Arial Rounded MT Bold";
     text-align: right;
     margin-left: auto;
+    animation: guess-animation 0.2s ease-out;
 }
 
 .incorrect-guess {

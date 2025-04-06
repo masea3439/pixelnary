@@ -1,3 +1,5 @@
+import {gameState} from "./game_state.js";
+
 const colors = [
     '#ff0000', '#ff8000', '#ffff00', '#00ff00', '#00ffff',
     '#0080ff', '#0000ff', '#8000ff', '#ff00ff', '#ff0080', 
@@ -5,9 +7,7 @@ const colors = [
     '#8e6900', '#c28000', '#008080', '#800080', '#009933'
 ];
 
-
 const colorPicker = document.getElementById('color-picker');
-export let selectedColor = '#000000';
 colors.forEach(color => {
     const colorBox = document.createElement('div');
     colorBox.style.backgroundColor = color;
@@ -19,5 +19,5 @@ colors.forEach(color => {
 //colorPicker.style.visibility = 'hidden';
 
 function selectColor(color) {
-    selectedColor = color;
+    gameState.selectedColor = color;
 }

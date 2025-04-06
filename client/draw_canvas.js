@@ -1,13 +1,11 @@
-import { selectedColor } from "./color_picker.js";
 import { PeriodicUpdateSocket } from "./websocket.js";
 import { eventEmitter } from "./event_emitter.js";
+import { gameState } from "./game_state.js";
 
 const drawSocket = new PeriodicUpdateSocket("canvas", 0.25)
 const canvas = document.getElementById('draw-canvas');
-const gridSize = 6;
 const squareMargin = 5;
 let squareLength = null;
-let pixels = new Array(gridSize ** 2).fill('#bfbfbf');
 
 window.addEventListener('resize', handleResize);
 canvas.addEventListener('mousemove', handleMouseMove);
@@ -17,7 +15,7 @@ canvas.addEventListener('mouseleave', handleMouseOut);
 const ctx = canvas.getContext('2d');
 
 eventEmitter.on('canvas', (data) => {
-    pixels = data.split(',');
+    gameState.pixels = data.split(',');
     handleResize();
 });
 
@@ -29,10 +27,10 @@ function getMouseSquare(mouseX, mouseY) {
         mouseSquareX = Math.floor((mouseX - squareMargin/2) / (squareLength + squareMargin));
         mouseSquareY = Math.floor((mouseY - squareMargin/2) / (squareLength + squareMargin));
     }
-    if (mouseSquareX < 0 || mouseSquareX >= gridSize) {
+    if (mouseSquareX < 0 || mouseSquareX >= gameState.gridSize) {
         mouseSquareX = null;
     }
-    if (mouseSquareY < 0 || mouseSquareY >= gridSize) {
+    if (mouseSquareY < 0 || mouseSquareY >= gameState.gridSize) {
         mouseSquareY = null;
     }
     return [mouseSquareX, mouseSquareY];
@@ -53,7 +51,7 @@ function drawGrid(ctx, gridSize, mouseX=null, mouseY=null) {
             if (mouseSquareX != null && mouseSquareY != null && mouseSquareX == x && mouseSquareY == y) {
                 ctx.fillStyle = '#ffffff';
             } else {
-                ctx.fillStyle = pixels[x*gridSize + y];
+                ctx.fillStyle = gameState.pixels[x*gridSize + y];
             }
             ctx.fillRect(
                 squareMargin + squareX + (squareLength + squareMargin)*x,
@@ -68,17 +66,17 @@ function drawGrid(ctx, gridSize, mouseX=null, mouseY=null) {
 function handleResize() {
     const parentElement = canvas.parentElement;
     const gridLength = Math.min(parentElement.offsetWidth, parentElement.offsetHeight);
-    squareLength = (gridLength - squareMargin*(gridSize+1)) / gridSize;
+    squareLength = (gridLength - squareMargin*(gameState.gridSize+1)) / gameState.gridSize;
     canvas.width = gridLength;
     canvas.height = gridLength;
-    drawGrid(ctx, gridSize);
+    drawGrid(ctx, gameState.gridSize);
 }
 
 function colorPixel(mouseX, mouseY, isDrawing) {
     const [mouseSquareX, mouseSquareY] = getMouseSquare(mouseX, mouseY);
     if (mouseSquareX != null && mouseSquareY != null && isDrawing) {
-        pixels[mouseSquareX*gridSize + mouseSquareY] = selectedColor;
-        drawSocket.sendData(pixels.toString())
+        gameState.pixels[mouseSquareX*gameState.gridSize + mouseSquareY] = gameState.selectedColor;
+        drawSocket.sendData(gameState.pixels.toString())
     }
 }
 
@@ -94,11 +92,11 @@ function handleMouseMove(event) {
     colorPixel(mouseX, mouseY, isDrawing);
 
   
-    drawGrid(ctx, gridSize, mouseX, mouseY);
+    drawGrid(ctx, gameState.gridSize, mouseX, mouseY);
 }
   
 function handleMouseOut() {
-    drawGrid(ctx, gridSize);
+    drawGrid(ctx, gameState.gridSize);
 }
 
 handleResize();

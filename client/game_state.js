@@ -1,11 +1,9 @@
 export let gameState = {
     playerId: null,
     drawRolePlayerId: null,
-    matchState: "drawing",
-    roundTimeLeft: 60,
-    gridSize: 6,
-    pixels: new Array(6 ** 2).fill('#bfbfbf'),
+    matchState: "waiting",
+    roundTimeLeft: 0,
+    gridSize: 0,
+    pixels: [],
     selectedColor: '#000000'
 };
-
-//let pixels = new Array(gridSize ** 2).fill('#bfbfbf');

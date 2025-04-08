@@ -44,5 +44,7 @@ socket.onmessage = (event) => {
             eventEmitter.emit('canvas', message.data);
         case "guess":
             eventEmitter.emit('guess', message.data);
+        case "start-round":
+            eventEmitter.emit('start-round', message.data);
     }
 };

@@ -11,5 +11,5 @@ document.getElementById("host-game").addEventListener("click", function() {
 })
 
 document.getElementById("join-game").addEventListener("click", function() {
-    
+    window.location.href = "connect"
 })

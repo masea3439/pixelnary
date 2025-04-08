@@ -10,11 +10,33 @@
         </style>
     </head>
     <body>
+        <script src="game.js" type="module" defer></script>
         <script src="color_picker.js" type="module" defer></script>
         <script src="draw_canvas.js" type="module" defer></script>
         <script src="guess_log.js" type="module" defer></script>
         <script src="timer.js" type="module" defer></script>
         <script src="websocket.js" type="module" defer></script>
+
+        <div id="waiting-screen">
+            <div id="waiting-message">
+                Waiting for teammate...
+            </div>
+            <div class="loading-icon"></div>
+
+            <div id="pin-container">
+                <div id="pin-message">
+                    Room code:
+                </div>
+                <div id="pin"></div>
+            </div>
+            <button id="invite-link" class="button">
+                <svg fill="#ffffff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M20 2H10c-1.103 0-2 .897-2 2v4H4c-1.103 0-2 .897-2 2v10c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2v-4h4c1.103 0 2-.897 2-2V4c0-1.103-.897-2-2-2zM4 20V10h10l.002 10H4zm16-6h-4v-4c0-1.103-.897-2-2-2h-4V4h10v10z"></path><path d="M6 12h6v2H6zm0 4h6v2H6z"></path></g></svg>
+                Invite Link
+            </button>
+            <div id="copy-link-message">
+                Link Copied!
+            </div>
+        </div>
 
         <div id="outer-game-container">
             <div id="header">

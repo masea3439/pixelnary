@@ -26,4 +26,4 @@ function stopTimer() {
     clearInterval(timerIntervalId);
 }
 
-startTimer();
+startTimer(); //TODO remove

@@ -19,6 +19,8 @@ eventEmitter.on('canvas', (data) => {
     handleResize();
 });
 
+eventEmitter.on('game-state-updated', handleResize);
+
 function getMouseSquare(mouseX, mouseY) {
     let mouseSquareX = null;
     let mouseSquareY = null;
@@ -98,5 +100,3 @@ function handleMouseMove(event) {
 function handleMouseOut() {
     drawGrid(ctx, gameState.gridSize);
 }
-
-handleResize();

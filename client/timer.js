@@ -4,6 +4,8 @@ import { gameState } from "./game_state.js";
 const timer = document.getElementById("time")
 let timerIntervalId;
 
+eventEmitter.on('game-state-updated', startTimer);
+
 function tick() {
     if (gameState.roundTimeLeft == 0) {
         clearInterval(timerIntervalId);
@@ -25,5 +27,3 @@ function startTimer() {
 function stopTimer() {
     clearInterval(timerIntervalId);
 }
-
-startTimer(); //TODO remove

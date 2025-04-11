@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -17,6 +18,18 @@ type Guess struct {
 	Guess     string `json:"guess"`
 	IsCorrect bool   `json:"isCorrect"`
 }
+
+type GameState struct {
+	PlayerId         int    `json:"playerId"`
+	DrawRolePlayerId int    `json:"drawRolePlayerId"`
+	MatchState       string `json:"matchState"`
+	RoundTimeLeft    int    `json:"roundTimeLeft"`
+	GridSize         int    `json:"gridSize"`
+	Word             string `json:"word"`
+}
+
+const roundTime = 90
+const startingGridSize = 7
 
 func sendMessage(conn *websocket.Conn, data []byte) {
 	if conn == nil {
@@ -53,7 +66,7 @@ func ProcessClientMessage(senderConn *websocket.Conn, gameRoom *GameRoom, byteMe
 		// TODO check game state
 		// TODO input validation
 		// TODO check correctness
-		var guess = Guess{message.Data, false}
+		guess := Guess{message.Data, false}
 		jsonGuess, err := json.Marshal(guess)
 		if err != nil {
 			fmt.Println(err)
@@ -69,4 +82,67 @@ func ProcessClientMessage(senderConn *websocket.Conn, gameRoom *GameRoom, byteMe
 		sendMessage(gameRoom.player1Conn, jsonMessage)
 		sendMessage(gameRoom.player2Conn, jsonMessage)
 	}
+}
+
+func sendStartRoundMessage(gameRoom *GameRoom, playerId int, drawRolePlayerId int, gridSize int) {
+	var gameState GameState
+	if playerId == drawRolePlayerId {
+		gameState = GameState{
+			PlayerId:         playerId,
+			DrawRolePlayerId: drawRolePlayerId,
+			MatchState:       "drawing",
+			RoundTimeLeft:    roundTime,
+			GridSize:         gridSize,
+		}
+	} else {
+		gameState = GameState{
+			PlayerId:         playerId,
+			DrawRolePlayerId: drawRolePlayerId,
+			MatchState:       "drawing",
+			RoundTimeLeft:    roundTime,
+			GridSize:         gridSize,
+			Word:             gameRoom.word,
+		}
+	}
+	jsonGameState, err := json.Marshal(gameState)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	message := Message{"start-round", string(jsonGameState)}
+	jsonMessage, err := json.Marshal(message)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	if playerId == 1 {
+		sendMessage(gameRoom.player1Conn, jsonMessage)
+	} else {
+		sendMessage(gameRoom.player2Conn, jsonMessage)
+	}
+}
+
+// TODO keep track of past words to avoid repetition
+func getRandomWord() string {
+	//TODO retrieve from redis
+	return "house"
+}
+
+func startNextRound(gameRoom *GameRoom) {
+	if gameRoom.roundTimer != nil {
+		gameRoom.roundTimer.Stop()
+	}
+	gameRoom.round++
+	gridSize := startingGridSize + 1 - gameRoom.round
+	drawRolePlayerId := gameRoom.round%2 + 1
+	gameRoom.word = getRandomWord()
+	gameRoom.roundTimer = time.AfterFunc(time.Duration(roundTime)*time.Second, func() {
+		gameOver(gameRoom)
+	})
+	sendStartRoundMessage(gameRoom, 1, drawRolePlayerId, gridSize)
+	sendStartRoundMessage(gameRoom, 2, drawRolePlayerId, gridSize)
+}
+
+func gameOver(gameRoom *GameRoom) {
+
 }

@@ -93,6 +93,7 @@ func sendStartRoundMessage(gameRoom *GameRoom, playerId int, drawRolePlayerId in
 			MatchState:       "drawing",
 			RoundTimeLeft:    roundTime,
 			GridSize:         gridSize,
+			Word:             gameRoom.word,
 		}
 	} else {
 		gameState = GameState{
@@ -101,7 +102,6 @@ func sendStartRoundMessage(gameRoom *GameRoom, playerId int, drawRolePlayerId in
 			MatchState:       "drawing",
 			RoundTimeLeft:    roundTime,
 			GridSize:         gridSize,
-			Word:             gameRoom.word,
 		}
 	}
 	jsonGameState, err := json.Marshal(gameState)
@@ -125,7 +125,7 @@ func sendStartRoundMessage(gameRoom *GameRoom, playerId int, drawRolePlayerId in
 // TODO keep track of past words to avoid repetition
 func getRandomWord() string {
 	//TODO retrieve from redis
-	return "house"
+	return "House"
 }
 
 func startNextRound(gameRoom *GameRoom) {

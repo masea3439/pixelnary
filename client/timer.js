@@ -6,12 +6,7 @@ let timerIntervalId;
 
 eventEmitter.on('game-state-updated', startTimer);
 
-function tick() {
-    if (gameState.roundTimeLeft == 0) {
-        clearInterval(timerIntervalId);
-        return;
-    }
-    gameState.roundTimeLeft--;
+function setTimer() {
     let seconds = gameState.roundTimeLeft % 60;
     let minutes = Math.floor(gameState.roundTimeLeft/60);
 
@@ -20,7 +15,17 @@ function tick() {
     timer.textContent = `${minutes}:${strSeconds}`;
 }
 
+function tick() {
+    if (gameState.roundTimeLeft == 0) {
+        clearInterval(timerIntervalId);
+        return;
+    }
+    gameState.roundTimeLeft--;
+    setTimer();
+}
+
 function startTimer() {
+    setTimer();
     timerIntervalId = setInterval(tick, 1000);
 }
 

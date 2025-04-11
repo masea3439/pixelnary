@@ -4,6 +4,7 @@ import { gameState } from "./game_state.js";
 
 const drawSocket = new PeriodicUpdateSocket("canvas", 0.25)
 const canvas = document.getElementById('draw-canvas');
+const drawMessage = document.getElementById('draw-message');
 const squareMargin = 5;
 let squareLength = null;
 
@@ -19,7 +20,20 @@ eventEmitter.on('canvas', (data) => {
     handleResize();
 });
 
-eventEmitter.on('game-state-updated', handleResize);
+eventEmitter.on('game-state-updated', (data) => {
+    showMessage();
+    handleResize();
+});
+
+function showMessage() {
+    if (gameState.playerId == gameState.drawRolePlayerId) {
+        drawMessage.style.visibility = 'visible';
+    }
+}
+
+function hideMessage() {
+    drawMessage.style.visibility = 'hidden';
+}
 
 function getMouseSquare(mouseX, mouseY) {
     let mouseSquareX = null;
@@ -78,7 +92,8 @@ function colorPixel(mouseX, mouseY, isDrawing) {
     const [mouseSquareX, mouseSquareY] = getMouseSquare(mouseX, mouseY);
     if (mouseSquareX != null && mouseSquareY != null && isDrawing) {
         gameState.pixels[mouseSquareX*gameState.gridSize + mouseSquareY] = gameState.selectedColor;
-        drawSocket.sendData(gameState.pixels.toString())
+        drawSocket.sendData(gameState.pixels.toString());
+        hideMessage();
     }
 }
 

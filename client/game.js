@@ -28,16 +28,15 @@ function updateWord() {
         return;
     }
     if (gameState.word == "") {
-        word.innerText = gameState.word;
+        word.innerText = "";
         return;
     }
     let message;
     if (gameState.playerId == gameState.drawRolePlayerId) {
-        message = "Draw the word: ";
+        message = "The word is: ";
     } else {
         message = "The word was: ";
     }
-    console.log(gameState.word);
     word.innerText = message + gameState.word;
 }
 
@@ -53,7 +52,7 @@ function startRound(roundJson) {
 
     gameState.matchState = "drawing";
 
-    updateWord()
+    updateWord();
 
     eventEmitter.emit('game-state-updated', null);
     waitingScreen.style.display = "none";

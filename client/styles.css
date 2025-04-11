@@ -175,6 +175,16 @@ html, body {
     overflow: hidden;
 }
 
+#draw-message {
+    visibility: hidden;
+    position: absolute;
+    font-family: "Arial Rounded MT Bold";
+    font-size: xx-large;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 #color-picker {
     display: grid;
     grid-template-columns: repeat(10, 1fr);
@@ -184,8 +194,8 @@ html, body {
 
 #guess-log-wrapper {
     display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
+    justify-content: center;
+    align-items: center;
     height: 100%;
     width: 100%;
     margin-right: 10%;
@@ -200,6 +210,17 @@ html, body {
     width: 100%;
     overflow-y: auto;
     scrollbar-width: none;
+}
+
+#guess-message {
+    visibility: hidden;
+    position: absolute;
+    font-family: "Arial Rounded MT Bold";
+    font-size: xx-large;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
 #guess-log::-webkit-scrollbar {

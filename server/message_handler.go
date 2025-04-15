@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math/rand"
+	"strings"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -12,6 +14,10 @@ import (
 type Message struct {
 	MessageType string `json:"messageType"`
 	Data        string `json:"data"`
+}
+
+type CompletedMessage struct {
+	TimeUntilNextRound int `json:"timeUntilNextRound"`
 }
 
 type Guess struct {
@@ -29,7 +35,19 @@ type GameState struct {
 }
 
 const roundTime = 90
+const nextRoundWaitTime = 10
 const startingGridSize = 7
+const minGridSize = 3
+
+func getJsonMessage(messageType string, data string) []byte {
+	message := Message{messageType, data}
+	jsonMessage, err := json.Marshal(message)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return jsonMessage
+}
 
 func sendMessage(conn *websocket.Conn, data []byte) {
 	if conn == nil {
@@ -65,13 +83,16 @@ func ProcessClientMessage(senderConn *websocket.Conn, gameRoom *GameRoom, byteMe
 	case "guess":
 		// TODO check game state
 		// TODO input validation
-		// TODO check correctness
-		guess := Guess{message.Data, false}
+		isCorrect := strings.EqualFold(message.Data, gameRoom.word)
+
+		guess := Guess{message.Data, isCorrect}
+
 		jsonGuess, err := json.Marshal(guess)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
+
 		message.Data = string(jsonGuess)
 
 		jsonMessage, err := json.Marshal(message)
@@ -81,6 +102,10 @@ func ProcessClientMessage(senderConn *websocket.Conn, gameRoom *GameRoom, byteMe
 		}
 		sendMessage(gameRoom.player1Conn, jsonMessage)
 		sendMessage(gameRoom.player2Conn, jsonMessage)
+
+		if isCorrect {
+			completeRound(gameRoom)
+		}
 	}
 }
 
@@ -109,12 +134,7 @@ func sendStartRoundMessage(gameRoom *GameRoom, playerId int, drawRolePlayerId in
 		fmt.Println(err)
 		return
 	}
-	message := Message{"start-round", string(jsonGameState)}
-	jsonMessage, err := json.Marshal(message)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	jsonMessage := getJsonMessage("start-round", string(jsonGameState))
 	if playerId == 1 {
 		sendMessage(gameRoom.player1Conn, jsonMessage)
 	} else {
@@ -125,7 +145,12 @@ func sendStartRoundMessage(gameRoom *GameRoom, playerId int, drawRolePlayerId in
 // TODO keep track of past words to avoid repetition
 func getRandomWord() string {
 	//TODO retrieve from redis
-	return "House"
+	words := []string{
+		"acorn", "alien", "apple", "bee", "cactus", "chair", "diamond", "duck",
+		"door", "earth", "fire", "fish", "hat", "house", "key", "leaf", "ladybug",
+		"mountain", "moon", "owl", "pencil", "rainbow", "snake", "skull", "soccer",
+		"spider", "star", "tent", "turtle", "water", "zebra"}
+	return words[rand.Intn(len(words))]
 }
 
 func startNextRound(gameRoom *GameRoom) {
@@ -133,7 +158,7 @@ func startNextRound(gameRoom *GameRoom) {
 		gameRoom.roundTimer.Stop()
 	}
 	gameRoom.round++
-	gridSize := startingGridSize + 1 - gameRoom.round
+	gridSize := max(startingGridSize+1-gameRoom.round, minGridSize)
 	drawRolePlayerId := gameRoom.round%2 + 1
 	gameRoom.word = getRandomWord()
 	gameRoom.roundTimer = time.AfterFunc(time.Duration(roundTime)*time.Second, func() {
@@ -141,6 +166,19 @@ func startNextRound(gameRoom *GameRoom) {
 	})
 	sendStartRoundMessage(gameRoom, 1, drawRolePlayerId, gridSize)
 	sendStartRoundMessage(gameRoom, 2, drawRolePlayerId, gridSize)
+}
+
+func completeRound(gameRoom *GameRoom) {
+	completedMessage := CompletedMessage{nextRoundWaitTime}
+	jsonCompletedMessage, err := json.Marshal(completedMessage)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	jsonMessage := getJsonMessage("round-completed", string(jsonCompletedMessage))
+	sendMessage(gameRoom.player1Conn, jsonMessage)
+	sendMessage(gameRoom.player2Conn, jsonMessage)
+	time.AfterFunc(nextRoundWaitTime*time.Second, func() { startNextRound(gameRoom) }) //TODO check if room is still open
 }
 
 func gameOver(gameRoom *GameRoom) {

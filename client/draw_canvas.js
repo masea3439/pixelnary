@@ -26,8 +26,10 @@ eventEmitter.on('game-state-updated', (data) => {
 });
 
 function showMessage() {
-    if (gameState.playerId == gameState.drawRolePlayerId) {
+    if (gameState.matchState == "drawing" && gameState.playerId == gameState.drawRolePlayerId) {
         drawMessage.style.visibility = 'visible';
+    } else {
+        drawMessage.style.visibility = 'hidden';
     }
 }
 
@@ -102,6 +104,9 @@ function isPrimaryButtonPressed(buttons) {
 }
 
 function handleMouseMove(event) {
+    if (gameState.matchState != "drawing" || gameState.playerId != gameState.drawRolePlayerId) {
+        return;
+    }
     const rect = canvas.getBoundingClientRect();
     const isDrawing = isPrimaryButtonPressed(event.buttons);
     const mouseX = event.clientX - rect.left;
@@ -111,7 +116,10 @@ function handleMouseMove(event) {
   
     drawGrid(ctx, gameState.gridSize, mouseX, mouseY);
 }
-  
+
 function handleMouseOut() {
+    if (gameState.matchState != "drawing" || gameState.playerId != gameState.drawRolePlayerId) {
+        return;
+    }
     drawGrid(ctx, gameState.gridSize);
 }

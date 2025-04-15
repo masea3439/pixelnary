@@ -14,6 +14,9 @@ const currentUrl = window.location.href;
 const roomKey = currentUrl.split('/').pop();
 pin.innerHTML = `<strong>${roomKey}</strong>`;
 
+eventEmitter.on('start-round', startRound);
+eventEmitter.on('round-completed', roundCompleted);
+
 linkButton.addEventListener('click', function() {
     navigator.clipboard.writeText(`http://localhost:8080/game/${roomKey}`); //TODO replace
     clearTimeout(copyLinkTimeout)
@@ -54,9 +57,15 @@ function startRound(roundJson) {
 
     updateWord();
 
+    outerGameContainer.style.display = "flex";
     eventEmitter.emit('game-state-updated', null);
     waitingScreen.style.display = "none";
-    outerGameContainer.style.display = "visible";
+
 }
 
-eventEmitter.on('start-round', startRound);
+function roundCompleted(completedMessageJson) {
+    const completedMessage = JSON.parse(completedMessageJson);
+    gameState.matchState = "completed";
+    gameState.roundTimeLeft = completedMessage.timeUntilNextRound;
+    eventEmitter.emit('game-state-updated', null);
+}

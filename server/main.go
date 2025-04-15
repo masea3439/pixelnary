@@ -66,7 +66,16 @@ func openWebSocketConn(w http.ResponseWriter, r *http.Request) {
 
 	for {
 		_, p, err := conn.ReadMessage()
-		if err != nil {
+		if websocket.IsCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway) {
+			//TODO send player disconnect message to remaining player
+			if gameRoom.player1Conn == conn {
+				gameRoom.player1Conn = nil
+			} else if gameRoom.player2Conn == conn {
+				gameRoom.player2Conn = nil
+			}
+			cleanupEmptyRoom(roomKey)
+			return
+		} else if err != nil {
 			log.Println(err)
 			return
 		}

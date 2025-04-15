@@ -137,9 +137,13 @@ html, body {
     border-radius: 1000px;
 }
 
+#next-round-timer-text {
+    display: none;
+    white-space: nowrap;
+}
+
 #outer-game-container {
     display: none;
-    display: flex;
     align-items: center;
     flex-direction: column;
     margin-top: 2%;

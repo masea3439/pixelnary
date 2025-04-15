@@ -1,10 +1,22 @@
 import { eventEmitter } from "./event_emitter.js";
 import { gameState } from "./game_state.js";
 
-const timer = document.getElementById("time")
+const timer = document.getElementById("time");
+const clockIcon = document.getElementById("clock-icon");
+const nextRoundTimerText = document.getElementById("next-round-timer-text");
+
 let timerIntervalId;
 
-eventEmitter.on('game-state-updated', startTimer);
+eventEmitter.on('game-state-updated', (data) => {
+    if (gameState.matchState == "drawing") {
+        clockIcon.style.display = "block";
+        nextRoundTimerText.style.display = "none";
+    } else if (gameState.matchState == "completed") {
+        clockIcon.style.display = "none";
+        nextRoundTimerText.style.display = "block";
+    }
+    startTimer();
+});
 
 function setTimer() {
     let seconds = gameState.roundTimeLeft % 60;
@@ -25,6 +37,7 @@ function tick() {
 }
 
 function startTimer() {
+    stopTimer();
     setTimer();
     timerIntervalId = setInterval(tick, 1000);
 }

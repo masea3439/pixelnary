@@ -41,3 +41,7 @@ socket.onmessage = (event) => {
     const message = JSON.parse(event.data);
     eventEmitter.emit(message.messageType, message.data);
 };
+
+socket.onerror = (event) => {
+    eventEmitter.emit('does-not-exist', '');
+};

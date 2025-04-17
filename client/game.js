@@ -6,6 +6,7 @@ const pin = document.getElementById('pin');
 const linkButton = document.getElementById('invite-link');
 const copyLinkMessage = document.getElementById('copy-link-message');
 const waitingScreen = document.getElementById('waiting-screen');
+const noRoomScreen = document.getElementById('no-room-screen');
 const outerGameContainer = document.getElementById('outer-game-container');
 const word = document.getElementById('word');
 const disconnectPopup = document.getElementById('disconnect-popup');
@@ -21,9 +22,11 @@ const roomKey = currentUrl.split('/').pop();
 pin.innerHTML = `<strong>${roomKey}</strong>`;
 
 eventEmitter.on('start-round', startRound);
+eventEmitter.on('does-not-exist', roomDoesNotExist);
 eventEmitter.on('round-completed', roundCompleted);
 eventEmitter.on('disconnect', disconnected);
 eventEmitter.on('game-over', gameOver);
+
 
 linkButton.addEventListener('click', function() {
     navigator.clipboard.writeText(`http://localhost:8080/game/${roomKey}`); //TODO replace
@@ -82,7 +85,11 @@ function startRound(roundJson) {
     outerGameContainer.style.display = "flex";
     eventEmitter.emit('game-state-updated', null);
     waitingScreen.style.display = "none";
+}
 
+function roomDoesNotExist() {
+    noRoomScreen.style.display = "flex";
+    waitingScreen.style.display = "none";
 }
 
 function roundCompleted(completedMessageJson) {

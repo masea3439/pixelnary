@@ -90,6 +90,19 @@ html, body {
     color: #000000;
 }
 
+#no-room-screen {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    font-family: "Arial Rounded MT Bold";
+    font-size: xx-large;
+    background-color: #f98a8a;
+    gap: 2em;
+}
+
 #pin-container {
     display: flex;
     margin-top: 20%;

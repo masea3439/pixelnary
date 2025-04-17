@@ -246,6 +246,56 @@ html, body {
     font-size: large;
 }
 
+#disconnect-popup {
+    display: none;
+    flex-direction: column;
+    text-align: center;
+    font-family: "Arial Rounded MT Bold";
+    font-size: xx-large;
+    justify-content: center;
+    align-items: center;
+    height: 20%;
+    gap: 15%;
+}
+
+#game-over-popup {
+    display: none;
+    text-align: center;
+    font-family: "Arial Rounded MT Bold";
+    font-size: xx-large;
+    height: 40%;
+}
+
+#rematch-dialogue {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10%;
+    height: 100%;
+    width: 100%;
+}
+
+#rematch-loading {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10%;
+    height: 100%;
+    width: 100%;
+}
+
+#rematch {
+    background-color: #ff8000;
+    height: 2em;
+}
+
+.menu {
+    background-color: #0099ff;
+    height: 2em;
+}
+
 .loading-icon {
     width: 50px;
     height: 50px;
@@ -303,6 +353,28 @@ html, body {
 
 .correct-guess {
     background-color: #99ff99;
+}
+
+@keyframes popup-animation {
+    from {
+        transform-origin: center;
+        transform: translate(-50%, -50%) scale(0);
+    }
+    to {
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.popup {
+    position: fixed;
+    background-color: #f98a8a;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 30px;
+    width: 40%;
+    animation: popup-animation 0.2s ease-out forwards;
+    z-index: 999;
 }
 
 svg {

@@ -14,6 +14,10 @@ eventEmitter.on('game-state-updated', (data) => {
     } else if (gameState.matchState == "completed") {
         clockIcon.style.display = "none";
         nextRoundTimerText.style.display = "block";
+    } else {
+        setTimer();
+        stopTimer();
+        return;
     }
     startTimer();
 });
@@ -36,6 +40,7 @@ function tick() {
     setTimer();
 }
 
+//TODO Fix timer stopping when tab not opened?
 function startTimer() {
     stopTimer();
     setTimer();

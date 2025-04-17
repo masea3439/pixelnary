@@ -34,6 +34,10 @@ type GameState struct {
 	Word             string `json:"word"`
 }
 
+type GameOver struct {
+	Word string `json:"word"`
+}
+
 const roundTime = 90
 const nextRoundWaitTime = 10
 const startingGridSize = 7
@@ -57,6 +61,14 @@ func sendMessage(conn *websocket.Conn, data []byte) {
 		log.Println(err)
 		return
 	}
+}
+
+func disconnectPlayer(conn *websocket.Conn) {
+	sendMessage(conn, getJsonMessage("disconnect", ""))
+	conn.WriteMessage(
+		websocket.CloseMessage,
+		websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""),
+	)
 }
 
 func sendMessageToPartner(senderConn *websocket.Conn, gameRoom *GameRoom, data []byte) {
@@ -105,6 +117,18 @@ func ProcessClientMessage(senderConn *websocket.Conn, gameRoom *GameRoom, byteMe
 
 		if isCorrect {
 			completeRound(gameRoom)
+		}
+	case "rematch":
+		if senderConn == gameRoom.player1Conn {
+			gameRoom.player1Rematch = true
+		} else {
+			gameRoom.player2Rematch = true
+		}
+		if gameRoom.player1Rematch && gameRoom.player2Rematch {
+			gameRoom.player1Rematch = false
+			gameRoom.player2Rematch = false
+			gameRoom.round = 0
+			startNextRound(gameRoom)
 		}
 	}
 }
@@ -182,5 +206,13 @@ func completeRound(gameRoom *GameRoom) {
 }
 
 func gameOver(gameRoom *GameRoom) {
-
+	gameOverMessage := GameOver{gameRoom.word}
+	jsonGameOverMessage, err := json.Marshal(gameOverMessage)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	jsonMessage := getJsonMessage("game-over", string(jsonGameOverMessage))
+	sendMessage(gameRoom.player1Conn, jsonMessage)
+	sendMessage(gameRoom.player2Conn, jsonMessage)
 }

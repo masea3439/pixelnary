@@ -51,7 +51,9 @@ function clearGuesses() {
 
 guessInput.addEventListener('keydown', function(event) {
     if (event.key == 'Enter') {
-        sendMessage('guess', guessInput.value.trim());
+        if (guessInput.value.trim() !== "") {
+            sendMessage('guess', guessInput.value.trim());
+        }
         guessInput.value = '';
     }
 });

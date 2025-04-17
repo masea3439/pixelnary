@@ -14,11 +14,13 @@ import (
 )
 
 type GameRoom struct {
-	player1Conn *websocket.Conn
-	player2Conn *websocket.Conn
-	word        string
-	round       int
-	roundTimer  *time.Timer
+	player1Conn    *websocket.Conn
+	player2Conn    *websocket.Conn
+	word           string
+	round          int
+	roundTimer     *time.Timer
+	player1Rematch bool
+	player2Rematch bool
 }
 
 var roomKeyToGameRoom = make(map[string]*GameRoom)
@@ -67,12 +69,13 @@ func openWebSocketConn(w http.ResponseWriter, r *http.Request) {
 	for {
 		_, p, err := conn.ReadMessage()
 		if websocket.IsCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway) {
-			//TODO send player disconnect message to remaining player
 			if gameRoom.player1Conn == conn {
-				gameRoom.player1Conn = nil
+				disconnectPlayer(gameRoom.player2Conn)
 			} else if gameRoom.player2Conn == conn {
-				gameRoom.player2Conn = nil
+				disconnectPlayer(gameRoom.player1Conn)
 			}
+			gameRoom.player1Conn = nil
+			gameRoom.player2Conn = nil
 			cleanupEmptyRoom(roomKey)
 			return
 		} else if err != nil {
@@ -95,6 +98,9 @@ func generateRandomKey(length int) string {
 func cleanupEmptyRoom(roomKey string) {
 	gameRoom, exists := roomKeyToGameRoom[roomKey]
 	if exists && gameRoom.player1Conn == nil && gameRoom.player2Conn == nil {
+		if gameRoom.roundTimer != nil {
+			gameRoom.roundTimer.Stop()
+		}
 		delete(roomKeyToGameRoom, roomKey)
 		log.Println("Deleted empty room")
 	}
@@ -104,7 +110,7 @@ func createNewGame(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
 		roomKey := generateRandomKey(6)
-		roomKeyToGameRoom[roomKey] = &GameRoom{round: 0, word: ""}
+		roomKeyToGameRoom[roomKey] = &GameRoom{round: 0, word: "", player1Rematch: false, player2Rematch: false}
 		// delete room after timeout if no websocket connection made
 		time.AfterFunc(5*time.Second, func() { cleanupEmptyRoom(roomKey) })
 		w.Header().Set("Content-Type", "text/plain")

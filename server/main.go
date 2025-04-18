@@ -25,7 +25,7 @@ type GameRoom struct {
 
 var roomKeyToGameRoom = make(map[string]*GameRoom)
 
-var allowedOrigins = []string{"http://localhost:8080", "https://localhost:8080"}
+var allowedOrigins = []string{"https://mathieusl.com"}
 
 var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {

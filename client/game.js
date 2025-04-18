@@ -29,7 +29,7 @@ eventEmitter.on('game-over', gameOver);
 
 
 linkButton.addEventListener('click', function() {
-    navigator.clipboard.writeText(`http://localhost:8080/game/${roomKey}`); //TODO replace
+    navigator.clipboard.writeText(`https://mathieusl.com/game/${roomKey}`);
     clearTimeout(copyLinkTimeout)
     copyLinkMessage.style.visibility = 'visible';
     copyLinkTimeout = setTimeout(() => {

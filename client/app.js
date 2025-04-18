@@ -1,5 +1,5 @@
 document.getElementById("host-game").addEventListener("click", function() {
-    fetch("https://mathieusl.com:3333/api/host", {
+    fetch("/api/host", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

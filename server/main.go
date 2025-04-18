@@ -134,7 +134,7 @@ func middleware(next http.HandlerFunc) http.HandlerFunc {
 }
 
 func main() {
-	http.HandleFunc("/api/ws", middleware(openWebSocketConn))
+	http.HandleFunc("/ws", middleware(openWebSocketConn))
 	http.HandleFunc("/api/host", middleware(createNewGame))
 
 	err := http.ListenAndServe(":3333", nil)

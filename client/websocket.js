@@ -2,7 +2,7 @@ import { eventEmitter } from "./event_emitter.js";
 
 const currentUrl = window.location.href;
 const roomKey = currentUrl.split('/').pop();
-const socket = new WebSocket(`ws://mathieusl.com:3333/api/ws?key=${roomKey}`);
+const socket = new WebSocket(`/ws?key=${roomKey}`);
 
 export function sendMessage(messageType, data) {
     const message = {

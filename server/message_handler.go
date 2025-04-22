@@ -376,9 +376,6 @@ func getRandomWord() string {
 }
 
 func startNextRound(gameRoom *GameRoom) {
-	if gameRoom.roundTimer != nil {
-		gameRoom.roundTimer.Stop()
-	}
 	gameRoom.round++
 	gridSize := max(startingGridSize+1-gameRoom.round, minGridSize)
 	drawRolePlayerId := gameRoom.round%2 + 1
@@ -391,6 +388,9 @@ func startNextRound(gameRoom *GameRoom) {
 }
 
 func completeRound(gameRoom *GameRoom) {
+	if gameRoom.roundTimer != nil {
+		gameRoom.roundTimer.Stop()
+	}
 	completedMessage := CompletedMessage{nextRoundWaitTime}
 	jsonCompletedMessage, err := json.Marshal(completedMessage)
 	if err != nil {

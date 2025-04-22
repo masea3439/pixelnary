@@ -1,0 +1,10 @@
+[Unit]
+Description=Pixelnary server
+
+[Service]
+ExecStart=/home/mathieu/pixelnary/server/pixelnary-server
+Restart=always
+User=mathieu
+
+[Install]
+WantedBy=multi-user.target

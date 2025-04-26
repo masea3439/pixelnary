@@ -15,6 +15,77 @@ html, body {
     gap: 5%;
 }
 
+#title-container {
+    display: grid;
+    grid-template-columns: repeat(35, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    width: 80%;
+    margin-bottom: 10%;
+}
+
+#tree-drawing {
+    display: grid;
+    position: absolute;
+    top: 45%;
+    left: 5%;
+    transform: rotate(-35deg);
+    z-index: -1;
+}
+
+#apple-drawing {
+    display: grid;
+    position: absolute;
+    top: 45%;
+    left: 70%;
+    transform: rotate(15deg);
+    z-index: -1;
+}
+
+#fish-drawing {
+    display: grid;
+    position: absolute;
+    top: 50%;
+    left: 20%;
+    transform: rotate(-20deg);
+    z-index: -1;
+}
+
+#pencil-drawing {
+    display: grid;
+    position: absolute;
+    top: 4%;
+    left: 92%;
+    transform: rotate(-40deg);
+    z-index: -1;
+}
+
+#earth-drawing {
+    display: grid;
+    position: absolute;
+    top: 65%;
+    left: 80%;
+    transform: rotate(-20deg);
+    z-index: -1;
+}
+
+#lightning-drawing {
+    display: grid;
+    position: absolute;
+    top: 4%;
+    left: 0%;
+    transform: rotate(30deg);
+    z-index: -1;
+}
+
+#fire-drawing {
+    display: grid;
+    position: absolute;
+    top: 70%;
+    left: 10%;
+    transform: rotate(5deg);
+    z-index: -1;
+}
+
 #host-game {
     background-color: #ff8000;
 }
@@ -44,15 +115,30 @@ html, body {
     background-color: #0099ff;
 }
 
-.button {
-    border-radius: 30px;
-    border-width: 0;
-    font-family: "Arial Rounded MT Bold";
-    font-size: x-large;
-    color: #ffffff; 
-    min-height: 10%;
-    width: 25%;
-    min-width: 200px;
+@media screen and (orientation: landscape) {
+    .button {
+        border-radius: 30px;
+        border-width: 0;
+        font-family: "Arial Rounded MT Bold";
+        font-size: x-large;
+        color: #ffffff; 
+        min-height: 10%;
+        width: 25%;
+        min-width: 200px;
+    }
+}
+
+@media screen and (orientation: portrait) {
+    .button {
+        border-radius: 30px;
+        border-width: 0;
+        font-family: "Arial Rounded MT Bold";
+        font-size: 4em;
+        color: #ffffff; 
+        min-height: 10%;
+        width: 60%;
+        min-width: 200px;
+    }
 }
 
 .button:hover {
@@ -73,7 +159,6 @@ html, body {
     color: #000000;
     margin: auto;
 }
-
 
 #waiting-screen {
     display: flex;
@@ -388,8 +473,4 @@ html, body {
     width: 40%;
     animation: popup-animation 0.2s ease-out forwards;
     z-index: 999;
-}
-
-svg {
-    height: 1.5em;
 }

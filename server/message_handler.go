@@ -39,7 +39,7 @@ type GameOver struct {
 }
 
 const roundTime = 90
-const nextRoundWaitTime = 10
+const nextRoundWaitTime = 5
 const startingGridSize = 7
 const minGridSize = 3
 

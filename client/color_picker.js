@@ -25,8 +25,6 @@ eventEmitter.on('game-state-updated', (data) => {
     }
 });
 
-//colorPicker.style.visibility = 'hidden';
-
 function selectColor(color) {
     gameState.selectedColor = color;
 }

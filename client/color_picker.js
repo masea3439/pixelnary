@@ -8,20 +8,25 @@ const colors = [
     '#8e6900', '#ffffff', '#bebebe', '#686868', '#000000'
 ];
 
+const colorPickerWrapper = document.getElementById('color-picker-wrapper');
 const colorPicker = document.getElementById('color-picker');
+const drawContainer = document.getElementById('draw-container');
+
 colors.forEach(color => {
     const colorBox = document.createElement('div');
     colorBox.style.backgroundColor = color;
     colorBox.classList.add('color-box');
-    colorBox.addEventListener('click', () => selectColor(color));
+    colorBox.addEventListener('pointerdown', () => selectColor(color));
     colorPicker.appendChild(colorBox);
-})
+});
 
 eventEmitter.on('game-state-updated', (data) => {
     if (gameState.matchState == "drawing" && gameState.playerId == gameState.drawRolePlayerId) {
-        colorPicker.style.visibility = 'visible';
+        colorPickerWrapper.style.display = 'flex';
+        drawContainer.classList.add('draw-container-two-rows');
     } else {
-        colorPicker.style.visibility = 'hidden';
+        colorPickerWrapper.style.display = 'none';
+        drawContainer.classList.remove('draw-container-two-rows');
     }
 });
 

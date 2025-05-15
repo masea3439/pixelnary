@@ -18,43 +18,43 @@
         <script src="websocket.js" type="module" defer></script>
 
         <div id="waiting-screen">
-            <div id="waiting-message">
+            <div id="waiting-message" class="text">
                 Waiting for teammate...
             </div>
             <div class="loading-icon"></div>
 
             <div id="pin-container">
-                <div id="pin-message">
+                <div id="pin-message" class="text">
                     Room code:
                 </div>
-                <div id="pin"></div>
+                <div id="pin" class="text"></div>
             </div>
             <button id="invite-link" class="button">
                 <svg height="1.5em" fill="#ffffff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M20 2H10c-1.103 0-2 .897-2 2v4H4c-1.103 0-2 .897-2 2v10c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2v-4h4c1.103 0 2-.897 2-2V4c0-1.103-.897-2-2-2zM4 20V10h10l.002 10H4zm16-6h-4v-4c0-1.103-.897-2-2-2h-4V4h10v10z"></path><path d="M6 12h6v2H6zm0 4h6v2H6z"></path></g></svg>
                 Invite Link
             </button>
-            <div id="copy-link-message">
+            <div id="copy-link-message" class="text">
                 Link Copied!
             </div>
         </div>
 
         <div id="no-room-screen">
-            Room Does Not Exist!
+            <div class="text">Room Does Not Exist!</div>
             <button class="button menu">Return To Menu</button>
         </div>
 
-        <div id="disconnect-popup" class="popup">
+        <div id="disconnect-popup" class="popup text">
             Teammate disconnected
             <button class="button menu">Return To Menu</button>
         </div>
 
         <div id="game-over-popup" class="popup">
-            <div id="rematch-dialogue">
+            <div id="rematch-dialogue" class="text">
                 Game Over
                 <button id="rematch" class="button">Rematch</button>
                 <button class="button menu">Return To Menu</button>
             </div>
-            <div id="rematch-loading">
+            <div id="rematch-loading" class="text">
                 Waiting for teammate...
                 <div class="loading-icon"></div>
             </div>
@@ -71,17 +71,24 @@
                 </div>
             </div>
             <div id="inner-game-container">
-                <div id="draw-canvas-wrapper">
-                    <div id="draw-message">Draw the word!</div>
-                    <canvas id="draw-canvas"></canvas>
+                <div id="draw-container">
+                    <div id="draw-canvas-wrapper">
+                        <div id="draw-message">Draw the word!</div>
+                        <div id="draw-canvas"></div>
+                    </div>
+                    <div id="color-picker-wrapper">
+                        <div id="color-picker"></div>
+                    </div>
                 </div>
-                <div id="guess-log-wrapper">
-                    <div id="guess-message">Guess the word<br>being drawn!</div>
-                    <div id="guess-log"></div>
-                </div>
-                <div id="color-picker"></div>
-                <div id="guess-input-wrapper">
-                    <input type="text" id="guess-input" maxlength="20" placeholder="Type your guess here" required>
+                <div id="guess-container">
+                    <div id="guess-log-wrapper">
+                        <div id="guess-message">Guess the word<br>being drawn!</div>
+                        <div id="guess-log"></div>
+                    </div>
+    
+                    <div id="guess-input-wrapper">
+                        <input type="text" id="guess-input" maxlength="20" placeholder="Type your guess here" required>
+                    </div>
                 </div>
             </div>
         </div>

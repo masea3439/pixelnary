@@ -360,10 +360,11 @@ const backgroundDrawings = [tree, apple, fish, pencil, earth, lightning, fire];
 backgroundDrawings.forEach(drawing => {
     const container = document.createElement('div');
     container.id = drawing.id;
+    container.classList.add('drawing')
 
     container.style.gridTemplateRows = `repeat(${drawing.rows}, 1fr);`;
     container.style.gridTemplateColumns = `repeat(${drawing.cols}, 1fr);`;
-    const width = 80 / 35 * drawing.cols;
+    const width = 80 / 35 * drawing.cols; // Title is 80% of the screen and 35 squares wide
     container.style.width = `${width}%`;
 
     drawing.squares.forEach((squareCoord) => {

@@ -63,6 +63,7 @@ Hospital
 Hot Dog
 House
 Igloo
+Knife
 Ladder
 Leaf
 Light Bulb
@@ -78,6 +79,7 @@ Orange
 Pants
 Pencil
 Pickaxe
+Pie
 Pig
 Pizza
 Plant

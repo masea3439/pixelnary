@@ -2,28 +2,30 @@ import { PeriodicUpdateSocket } from "./websocket.js";
 import { eventEmitter } from "./event_emitter.js";
 import { gameState } from "./game_state.js";
 
-const drawSocket = new PeriodicUpdateSocket("canvas", 0.25)
-const canvas = document.getElementById('draw-canvas');
+const drawSocket = new PeriodicUpdateSocket("canvas", 0.25);
 const drawMessage = document.getElementById('draw-message');
-const squareMargin = 5;
-let squareLength = null;
-
-window.addEventListener('resize', handleResize);
-canvas.addEventListener('mousemove', handleMouseMove);
-canvas.addEventListener('mousedown', handleMouseMove);
-canvas.addEventListener('mouseleave', handleMouseOut);
-
-const ctx = canvas.getContext('2d');
+const canvas = document.getElementById('draw-canvas');
+let drawPixels = [];
 
 eventEmitter.on('canvas', (data) => {
     gameState.pixels = data.split(',');
-    handleResize();
+    updatePixels();
 });
 
 eventEmitter.on('game-state-updated', (data) => {
     showMessage();
+    resetGrid();
     handleResize();
 });
+
+window.addEventListener('resize', handleResize);
+
+function handleResize() {
+    const parentElement = canvas.parentElement;
+    const canvasLength = Math.min(parentElement.offsetWidth, parentElement.offsetHeight);
+    canvas.style.width = `${canvasLength}px`;
+    canvas.style.height = `${canvasLength}px`;
+}
 
 function showMessage() {
     if (gameState.matchState == "drawing" && gameState.playerId == gameState.drawRolePlayerId) {
@@ -37,89 +39,45 @@ function hideMessage() {
     drawMessage.style.visibility = 'hidden';
 }
 
-function getMouseSquare(mouseX, mouseY) {
-    let mouseSquareX = null;
-    let mouseSquareY = null;
-
-    if (mouseX && mouseY) {
-        mouseSquareX = Math.floor((mouseX - squareMargin/2) / (squareLength + squareMargin));
-        mouseSquareY = Math.floor((mouseY - squareMargin/2) / (squareLength + squareMargin));
+function resetGrid() {
+    canvas.innerHTML = "";
+    drawPixels = [];
+    canvas.style.gridTemplateColumns = `repeat(${gameState.gridSize}, 1fr)`;
+    canvas.style.gridTemplateRows = `repeat(${gameState.gridSize}, 1fr)`;
+    for (let i = 0; i < gameState.gridSize**2; i++) {
+        const pixel = document.createElement('div');
+        pixel.classList.add('draw-pixel');
+        pixel.style.backgroundColor = gameState.pixels[i];
+        drawPixels.push(pixel);
+        canvas.appendChild(pixel);
     }
-    if (mouseSquareX < 0 || mouseSquareX >= gameState.gridSize) {
-        mouseSquareX = null;
-    }
-    if (mouseSquareY < 0 || mouseSquareY >= gameState.gridSize) {
-        mouseSquareY = null;
-    }
-    return [mouseSquareX, mouseSquareY];
-}
-
-function drawGrid(ctx, gridSize, mouseX=null, mouseY=null) {
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    
-    const gridLength = Math.min(canvas.width, canvas.height);
-    const squareX = centerX - gridLength / 2;
-    const squareY = centerY - gridLength / 2;
-
-    const [mouseSquareX, mouseSquareY] = getMouseSquare(mouseX, mouseY);
-    
-    for (let x = 0; x < gridSize; x++) {
-        for (let y = 0; y < gridSize; y++) {
-            if (mouseSquareX != null && mouseSquareY != null && mouseSquareX == x && mouseSquareY == y) {
-                ctx.fillStyle = '#ffffff';
-            } else {
-                ctx.fillStyle = gameState.pixels[x*gridSize + y];
-            }
-            ctx.fillRect(
-                squareMargin + squareX + (squareLength + squareMargin)*x,
-                squareMargin + squareY + (squareLength + squareMargin)*y, 
-                squareLength,
-                squareLength
-            );
-        };
+    if (gameState.matchState == "drawing" && gameState.playerId == gameState.drawRolePlayerId) {
+        canvas.addEventListener('pointerdown', (event) => colorPixelIfDrawing(event));
+        canvas.addEventListener('pointermove', (event) => colorPixelIfDrawing(event));
     };
 }
 
-function handleResize() {
-    const parentElement = canvas.parentElement;
-    const gridLength = Math.min(parentElement.offsetWidth, parentElement.offsetHeight);
-    squareLength = (gridLength - squareMargin*(gameState.gridSize+1)) / gameState.gridSize;
-    canvas.width = gridLength;
-    canvas.height = gridLength;
-    drawGrid(ctx, gameState.gridSize);
+function updatePixels() {
+    for (let i = 0; i < drawPixels.length; i++) {
+        drawPixels[i].style.backgroundColor = gameState.pixels[i];
+    }
 }
 
-function colorPixel(mouseX, mouseY, isDrawing) {
-    const [mouseSquareX, mouseSquareY] = getMouseSquare(mouseX, mouseY);
-    if (mouseSquareX != null && mouseSquareY != null && isDrawing) {
-        gameState.pixels[mouseSquareX*gameState.gridSize + mouseSquareY] = gameState.selectedColor;
+function colorPixelIfDrawing(event) {
+    if (event.buttons % 2 !== 0) {
+        colorPixel(event);
+    }
+}
+
+function colorPixel(event) {
+    let pixel = document.elementFromPoint(event.clientX, event.clientY);
+    if (pixel && pixel.classList.contains('draw-pixel')) {
+        const index = Array.prototype.indexOf.call(drawPixels, pixel);
+        gameState.pixels[index] = gameState.selectedColor;
         drawSocket.sendData(gameState.pixels.toString());
         hideMessage();
+        pixel.style.backgroundColor = gameState.selectedColor;
     }
 }
 
-function isPrimaryButtonPressed(buttons) {
-    return (buttons % 2 !== 0);
-}
-
-function handleMouseMove(event) {
-    if (gameState.matchState != "drawing" || gameState.playerId != gameState.drawRolePlayerId) {
-        return;
-    }
-    const rect = canvas.getBoundingClientRect();
-    const isDrawing = isPrimaryButtonPressed(event.buttons);
-    const mouseX = event.clientX - rect.left;
-    const mouseY = event.clientY - rect.top;
-    colorPixel(mouseX, mouseY, isDrawing);
-
-  
-    drawGrid(ctx, gameState.gridSize, mouseX, mouseY);
-}
-
-function handleMouseOut() {
-    if (gameState.matchState != "drawing" || gameState.playerId != gameState.drawRolePlayerId) {
-        return;
-    }
-    drawGrid(ctx, gameState.gridSize);
-}
+handleResize();

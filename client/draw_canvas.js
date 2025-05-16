@@ -13,8 +13,8 @@ eventEmitter.on('canvas', (data) => {
 });
 
 eventEmitter.on('game-state-updated', (data) => {
-    showMessage();
     resetGrid();
+    showMessage();
     handleResize();
 });
 

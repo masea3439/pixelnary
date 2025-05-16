@@ -8,6 +8,7 @@ const canvas = document.getElementById('draw-canvas');
 let drawPixels = [];
 
 eventEmitter.on('canvas', (data) => {
+    console.log('canvas')
     gameState.pixels = data.split(',');
     updatePixels();
 });
@@ -42,6 +43,9 @@ function hideMessage() {
 function resetGrid() {
     canvas.innerHTML = "";
     drawPixels = [];
+    canvas.removeEventListener('pointerdown', colorPixelIfDrawing);
+    canvas.removeEventListener('pointermove', colorPixelIfDrawing);
+
     canvas.style.gridTemplateColumns = `repeat(${gameState.gridSize}, 1fr)`;
     canvas.style.gridTemplateRows = `repeat(${gameState.gridSize}, 1fr)`;
     for (let i = 0; i < gameState.gridSize**2; i++) {
@@ -52,8 +56,8 @@ function resetGrid() {
         canvas.appendChild(pixel);
     }
     if (gameState.matchState == "drawing" && gameState.playerId == gameState.drawRolePlayerId) {
-        canvas.addEventListener('pointerdown', (event) => colorPixelIfDrawing(event));
-        canvas.addEventListener('pointermove', (event) => colorPixelIfDrawing(event));
+        canvas.addEventListener('pointerdown', colorPixelIfDrawing);
+        canvas.addEventListener('pointermove', colorPixelIfDrawing);
     };
 }
 

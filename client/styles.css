@@ -166,12 +166,12 @@ html, body {
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    height: 7em;
+    height: 10vh;
 }
 
 #word {
     font-family: "Arial Rounded MT Bold";
-    font-size: xx-large;
+    font-size: 4vh;
     color: #000000;
     margin: auto;
 }
@@ -236,7 +236,6 @@ html, body {
 #timer {
     display: flex;
     font-family: "Arial Rounded MT Bold";
-    font-size: large;
     align-items: center;
     color: #ffffff;
     position: absolute;
@@ -245,6 +244,16 @@ html, body {
     padding: 0.5em;
     background-color: #000000;
     border-radius: 1000px;
+}
+@media screen and (orientation: landscape) {
+    #timer {
+        font-size: large;
+    }
+}
+@media screen and (orientation: portrait) {
+    #timer {
+        font-size: x-large;
+    }
 }
 
 #next-round-timer-text {
@@ -267,7 +276,7 @@ html, body {
         height: 100%;
         width: 80%;
         gap: 4%;
-        padding-bottom: 5em;
+        padding-bottom: 6vh;
     }
 }
 
@@ -343,9 +352,11 @@ html, body {
     height: 100%;
 }
 
-.draw-pixel:hover {
-    transform: scale(1.2);
-    transform-origin: center;
+@media (hover: hover) {
+    .draw-pixel:hover {
+        transform: scale(1.2);
+        transform-origin: center;
+    }
 }
 
 #draw-message {
@@ -386,9 +397,20 @@ html, body {
     flex-direction: column;
     justify-content: flex-end;
     gap: 20px;
-    height: 100%;
     width: 100%;
     overflow-y: clip;
+}
+
+/* Need to set fixed height for overflow */
+@media screen and (orientation: landscape) {
+    #guess-log {
+        height: 57vh;
+    }
+}
+@media screen and (orientation: portrait) {
+    #guess-log {
+        height: 16vh;
+    }
 }
 
 #guess-message {

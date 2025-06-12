@@ -125,8 +125,12 @@ func createNewGame(w http.ResponseWriter, r *http.Request) {
 
 func middleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8080") //TODO Use allowed origins
-		w.Header().Set("Access-Control-Allow-Origin", "https://mathieusl.com:443")
+		origin := r.Header.Get("Origin")
+		for _, allowedOrigin := range allowedOrigins {
+			if origin == allowedOrigin {
+				w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
+			}
+		}
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
 		next.ServeHTTP(w, r)

@@ -64,6 +64,9 @@ func sendMessage(conn *websocket.Conn, data []byte) {
 }
 
 func disconnectPlayer(conn *websocket.Conn) {
+	if conn == nil {
+		return
+	}
 	sendMessage(conn, getJsonMessage("disconnect", ""))
 	conn.WriteMessage(
 		websocket.CloseMessage,

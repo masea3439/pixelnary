@@ -8,7 +8,6 @@ const canvas = document.getElementById('draw-canvas');
 let drawPixels = [];
 
 eventEmitter.on('canvas', (data) => {
-    console.log('canvas')
     gameState.pixels = data.split(',');
     updatePixels();
 });

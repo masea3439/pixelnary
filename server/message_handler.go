@@ -43,6 +43,8 @@ const nextRoundWaitTime = 5
 const startingGridSize = 7
 const minGridSize = 3
 
+// const wordlistKey = "p-wordlist"
+
 func getJsonMessage(messageType string, data string) []byte {
 	message := Message{messageType, data}
 	jsonMessage, err := json.Marshal(message)
@@ -169,137 +171,46 @@ func sendStartRoundMessage(gameRoom *GameRoom, playerId int, drawRolePlayerId in
 	}
 }
 
-// TODO keep track of past words to avoid repetition
-func getRandomWord() string {
-	//TODO retrieve from redis
-	words := []string{
-		"Acorn",
-		"Apple",
-		"Arrow",
-		"Axe",
-		"Bagel",
-		"Banana",
-		"Band Aid",
-		"Battery",
-		"Bee",
-		"Belt",
-		"Bird",
-		"Blood",
-		"Boat",
-		"Bow",
-		"Branch",
-		"Bridge",
-		"Bubble",
-		"Bucket",
-		"Bus",
-		"Cactus",
-		"Cake",
-		"Candle",
-		"Candy Cane",
-		"Car",
-		"Carrot",
-		"Castle",
-		"Chair",
-		"Chess",
-		"Chicken",
-		"City",
-		"Clock",
-		"Cloud",
-		"Clown",
-		"Coffee",
-		"Coin",
-		"Cookie",
-		"Corn",
-		"Diamond",
-		"Disco Ball",
-		"Door",
-		"Duck",
-		"Earth",
-		"Eggplant",
-		"Eye",
-		"Fire",
-		"Fish",
-		"Fishing Rod",
-		"Flag",
-		"Flashlight",
-		"Flower",
-		"Fly",
-		"Fork",
-		"Frog",
-		"Glasses",
-		"Grape",
-		"Grass",
-		"Hamburger",
-		"Hammer",
-		"Hat",
-		"Heart",
-		"High Heel",
-		"Hospital",
-		"Hot Dog",
-		"House",
-		"Igloo",
-		"Knife",
-		"Ladder",
-		"Leaf",
-		"Light Bulb",
-		"Lightbulb",
-		"Lightning",
-		"Magnet",
-		"Moon",
-		"Mountain",
-		"Movie",
-		"Mushroom",
-		"Nest",
-		"Orange",
-		"Pants",
-		"Pencil",
-		"Pickaxe",
-		"Pie",
-		"Pig",
-		"Pizza",
-		"Plant",
-		"Rainbow",
-		"Ring",
-		"Road",
-		"Robot",
-		"Rock",
-		"Rocket",
-		"Sand",
-		"Scythe",
-		"Shield",
-		"Shirt",
-		"Shoe",
-		"Shovel",
-		"Sink",
-		"Skull",
-		"Slide",
-		"Snake",
-		"Snowflake",
-		"Soccer Ball",
-		"Staircase",
-		"Star",
-		"Sun",
-		"Sunflower",
-		"Sword",
-		"Table",
-		"Tie",
-		"Tire",
-		"Tree",
-		"Turtle",
-		"Umbrella",
-		"Water",
-		"Watermelon",
-		"Window",
-		"Worm",
-		"Zebra"}
-	return words[rand.Intn(len(words))]
+// Storing word list in redis does not make sense as the entire word list size is minuscule
+// Can be stored in memory globally instead for use by all goroutines
+/**
+func getRandomWord(gameRoom *GameRoom) string {
+	// Using shuffle pop random method as word list is tiny thus memory use is tiny
+	// Should switch to repeat random if word list becomes large
+	if len(gameRoom.nextWords) == 0 {
+		gameRoom.nextWords = make([]int, numWords)
+		for i := 0; i < numWords; i++ {
+			gameRoom.nextWords[i] = i
+		}
+		rand.Shuffle(numWords, func(i int, j int) {
+			gameRoom.nextWords[i], gameRoom.nextWords[j] = gameRoom.nextWords[j], gameRoom.nextWords[i]
+		})
+	}
+
+	var wordIndex int
+	wordIndex, gameRoom.nextWords = pop(gameRoom.nextWords)
+
+	return LIndex(wordlistKey, wordIndex)
+}
+*/
+
+func setNextWord(gameRoom *GameRoom) {
+	if len(gameRoom.nextWords) == 0 {
+		gameRoom.nextWords = make([]string, len(fullWordList))
+		copy(gameRoom.nextWords, fullWordList)
+		rand.Shuffle(len(gameRoom.nextWords), func(i int, j int) {
+			gameRoom.nextWords[i], gameRoom.nextWords[j] = gameRoom.nextWords[j], gameRoom.nextWords[i]
+		})
+	}
+
+	gameRoom.word, gameRoom.nextWords = pop(gameRoom.nextWords)
 }
 
 func startNextRound(gameRoom *GameRoom) {
 	gameRoom.round++
 	gridSize := max(startingGridSize+1-gameRoom.round, minGridSize)
 	drawRolePlayerId := gameRoom.round%2 + 1
-	gameRoom.word = getRandomWord()
+	setNextWord(gameRoom)
 	gameRoom.roundTimer = time.AfterFunc(time.Duration(roundTime)*time.Second, func() {
 		gameOver(gameRoom)
 	})
@@ -333,4 +244,126 @@ func gameOver(gameRoom *GameRoom) {
 	jsonMessage := getJsonMessage("game-over", string(jsonGameOverMessage))
 	sendMessage(gameRoom.player1Conn, jsonMessage)
 	sendMessage(gameRoom.player2Conn, jsonMessage)
+}
+
+var fullWordList = []string{
+	"Acorn",
+	"Apple",
+	"Arrow",
+	"Axe",
+	"Bagel",
+	"Banana",
+	"Band Aid",
+	"Battery",
+	"Bee",
+	"Belt",
+	"Bird",
+	"Blood",
+	"Boat",
+	"Bow",
+	"Branch",
+	"Bridge",
+	"Bubble",
+	"Bucket",
+	"Bus",
+	"Cactus",
+	"Cake",
+	"Candle",
+	"Candy Cane",
+	"Car",
+	"Carrot",
+	"Castle",
+	"Chair",
+	"Chess",
+	"Chicken",
+	"City",
+	"Clock",
+	"Cloud",
+	"Clown",
+	"Coffee",
+	"Coin",
+	"Cookie",
+	"Corn",
+	"Diamond",
+	"Disco Ball",
+	"Door",
+	"Duck",
+	"Earth",
+	"Eggplant",
+	"Eye",
+	"Fire",
+	"Fish",
+	"Fishing Rod",
+	"Flag",
+	"Flashlight",
+	"Flower",
+	"Fly",
+	"Fork",
+	"Frog",
+	"Glasses",
+	"Grape",
+	"Grass",
+	"Hamburger",
+	"Hammer",
+	"Hat",
+	"Heart",
+	"High Heel",
+	"Hospital",
+	"Hot Dog",
+	"House",
+	"Igloo",
+	"Knife",
+	"Ladder",
+	"Leaf",
+	"Light Bulb",
+	"Lightbulb",
+	"Lightning",
+	"Magnet",
+	"Moon",
+	"Mountain",
+	"Movie",
+	"Mushroom",
+	"Nest",
+	"Orange",
+	"Pants",
+	"Pencil",
+	"Pickaxe",
+	"Pie",
+	"Pig",
+	"Pizza",
+	"Plant",
+	"Rainbow",
+	"Ring",
+	"Road",
+	"Robot",
+	"Rock",
+	"Rocket",
+	"Sand",
+	"Scythe",
+	"Shield",
+	"Shirt",
+	"Shoe",
+	"Shovel",
+	"Sink",
+	"Skull",
+	"Slide",
+	"Snake",
+	"Snowflake",
+	"Soccer Ball",
+	"Staircase",
+	"Star",
+	"Sun",
+	"Sunflower",
+	"Sword",
+	"Table",
+	"Tie",
+	"Tire",
+	"Tree",
+	"Turtle",
+	"Umbrella",
+	"Water",
+	"Watermelon",
+	"Window",
+	"Worm",
+	"Zebra",
 }

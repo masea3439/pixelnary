@@ -4,7 +4,6 @@ Arrow
 Axe
 Bagel
 Banana
-Band Aid
 Battery
 Bee
 Belt

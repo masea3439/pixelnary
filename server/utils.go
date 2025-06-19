@@ -7,3 +7,7 @@ func max(a int, b int) int {
 		return b
 	}
 }
+
+func pop(lst []string) (string, []string) {
+	return lst[len(lst)-1], lst[:len(lst)-1]
+}

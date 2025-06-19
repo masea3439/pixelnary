@@ -17,6 +17,7 @@ type GameRoom struct {
 	player1Conn    *websocket.Conn
 	player2Conn    *websocket.Conn
 	word           string
+	nextWords      []string
 	round          int
 	roundTimer     *time.Timer
 	player1Rematch bool
@@ -138,6 +139,8 @@ func middleware(next http.HandlerFunc) http.HandlerFunc {
 }
 
 func main() {
+	//ConnectRedis()
+
 	http.HandleFunc("/ws", middleware(openWebSocketConn))
 	http.HandleFunc("/api/host", middleware(createNewGame))
 

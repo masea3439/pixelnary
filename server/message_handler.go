@@ -209,13 +209,13 @@ func setNextWord(gameRoom *GameRoom) {
 func startNextRound(gameRoom *GameRoom) {
 	gameRoom.round++
 	gridSize := max(startingGridSize+1-gameRoom.round, minGridSize)
-	drawRolePlayerId := gameRoom.round%2 + 1
+	gameRoom.drawRolePlayerId = (gameRoom.drawRolePlayerId)%2 + 1
 	setNextWord(gameRoom)
 	gameRoom.roundTimer = time.AfterFunc(time.Duration(roundTime)*time.Second, func() {
 		gameOver(gameRoom)
 	})
-	sendStartRoundMessage(gameRoom, 1, drawRolePlayerId, gridSize)
-	sendStartRoundMessage(gameRoom, 2, drawRolePlayerId, gridSize)
+	sendStartRoundMessage(gameRoom, 1, gameRoom.drawRolePlayerId, gridSize)
+	sendStartRoundMessage(gameRoom, 2, gameRoom.drawRolePlayerId, gridSize)
 }
 
 func completeRound(gameRoom *GameRoom) {

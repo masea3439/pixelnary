@@ -14,14 +14,15 @@ import (
 )
 
 type GameRoom struct {
-	player1Conn    *websocket.Conn
-	player2Conn    *websocket.Conn
-	word           string
-	nextWords      []string
-	round          int
-	roundTimer     *time.Timer
-	player1Rematch bool
-	player2Rematch bool
+	player1Conn      *websocket.Conn
+	player2Conn      *websocket.Conn
+	word             string
+	nextWords        []string
+	round            int
+	drawRolePlayerId int
+	roundTimer       *time.Timer
+	player1Rematch   bool
+	player2Rematch   bool
 }
 
 var roomKeyToGameRoom = make(map[string]*GameRoom)
@@ -111,7 +112,8 @@ func createNewGame(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
 		roomKey := generateRandomKey(6)
-		roomKeyToGameRoom[roomKey] = &GameRoom{round: 0, word: "", player1Rematch: false, player2Rematch: false}
+		drawRolePlayerId := rand.Intn(2) + 1
+		roomKeyToGameRoom[roomKey] = &GameRoom{round: 0, drawRolePlayerId: drawRolePlayerId, word: "", player1Rematch: false, player2Rematch: false}
 		// delete room after timeout if no websocket connection made
 		time.AfterFunc(5*time.Second, func() { cleanupEmptyRoom(roomKey) })
 		w.Header().Set("Content-Type", "text/plain")

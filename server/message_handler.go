@@ -100,7 +100,11 @@ func ProcessClientMessage(senderConn *websocket.Conn, gameRoom *GameRoom, byteMe
 	case "guess":
 		// TODO check game state
 		// TODO input validation
-		isCorrect := strings.EqualFold(message.Data, gameRoom.word)
+
+		guessStriped := strings.ReplaceAll(message.Data, " ", "")
+		wordStriped := strings.ReplaceAll(gameRoom.word, " ", "")
+
+		isCorrect := strings.EqualFold(guessStriped, wordStriped)
 
 		guess := Guess{message.Data, isCorrect}
 
